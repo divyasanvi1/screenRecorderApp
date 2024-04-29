@@ -1,6 +1,7 @@
 import React from "react";
 import { ReactMediaRecorder } from "react-media-recorder";
 import { styled } from "@mui/system";
+import { useState,useEffect,useRef } from "react";
 const Container = styled("div")({
   display: "flex",
   justifyContent: "center",
@@ -13,6 +14,7 @@ const VideoContainer = styled("div")({
   paddingTop: "395px", // 16:9 aspect ratio
   position: "relative",
   overflow: "hidden",
+  backgroundColor: "peachpuff"
 });
 const VideoElement = styled("video")({
   position: "absolute",
@@ -22,16 +24,46 @@ const VideoElement = styled("video")({
   left: 0,
 });
 function AppComponent({ selectedMediaType }) {
+  const [mediaStream, setMediaStream] = useState(null);
+  const videoRef = useRef(null);
+  useEffect(() => {
+    // Request access to the user's camera when the component mounts
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        //console.log(stream)
+        // Store the obtained MediaStream in the component's state
+        setMediaStream(stream);
+        
+      })
+      .catch((error) => {
+        console.error('Error accessing camera:', error);
+      });
+  }, []); // Empty dependency array ensures the effect runs only once
+  {console.log(videoRef)} 
+  useEffect(() => {
+    if (mediaStream && videoRef.current) {
+      videoRef.current.srcObject = mediaStream;
+    }
+  }, [mediaStream]);
+
   return (
     <>
       <ReactMediaRecorder
         video={selectedMediaType === "video"}
         screen={selectedMediaType === "screen"}
-        render={({ status, startRecording, stopRecording, mediaBlobUrl, mediaStream }) => (
+        
+        render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
           <Container>
             <div>
+            
               <VideoContainer>
-              <VideoElement src={mediaBlobUrl} controls  loop />
+              
+              { mediaStream && (
+                       <VideoElement ref={videoRef} autoPlay />)}
+                 
+                   {mediaBlobUrl && (
+                    <VideoElement src={mediaBlobUrl} controls loop />
+                  )}
               </VideoContainer>
               <div className="flex justify-center items-center">
                 <p>{status}</p>

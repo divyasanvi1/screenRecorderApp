@@ -11,7 +11,7 @@ function Home({setSelectedMediaType}){
     setSelectedMediaType(event.target.value);
    }
     return(
-        <div class="flex justify-center items-center h-screen w-screen bg-pink-100">
+        <div className="flex justify-center items-center h-screen w-screen bg-pink-100">
             <label>
                 <input
                 type="radio"
