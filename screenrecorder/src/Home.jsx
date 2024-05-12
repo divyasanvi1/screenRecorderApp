@@ -1,37 +1,78 @@
-import React,{useState} from "react";
-import AppComponent from "./AppComponent";
+import React, { useState } from "react";
+import "./App.css";
+import SimpleBar from "simplebar-react";
+import Button from "@mui/material/Button";
+import GraphicEqIcon from "@mui/icons-material/GraphicEq";
+import "simplebar/dist/simplebar.min.css";
 import { Link } from "react-router-dom";
+import Switch from '@mui/material/Switch';
+import CameraIcon from '@mui/icons-material/Camera';
+import TvIcon from '@mui/icons-material/Tv';
+import SettingsIcon from '@mui/icons-material/Settings';
+function Home({ setSelectedMediaType }) {
+  const [selectedOption, setSelectedOption] = useState("video");
 
-function Home({setSelectedMediaType}){
-   const [selectedOption,setSelectedOption]=useState("video");
-
-   const handleOptionChange=(event)=>{
-   console.log(event);
+  const handleOptionChange = (event) => {
+    console.log(event);
     setSelectedOption(event.target.value);
     setSelectedMediaType(event.target.value);
-   }
-    return(
-        <div className="flex justify-center items-center h-screen w-screen bg-pink-100">
-            <label>
-                <input
-                type="radio"
-                value="video"
-                checked={selectedOption==="video"}
-                onChange={handleOptionChange}
-                />
-                Video
-            </label>
-            <label>
-                <input
-                type="radio"
-                value="screen"
-                checked={selectedOption==="screen"}
-                onChange={handleOptionChange}
-                />
-                screen
-            </label>
-            <Link to="/app">Go to App</Link>
+  };
+  return (
+    <div className="flex justify-center items-center bg-image h-screen w-screen">
+      <div className="flex flex-col  items-center second-div h-80% w-70%">
+        <h1 className="text-white text-5xl border-b-4 border-grey-300">
+          <GraphicEqIcon />
+          Recorder App
+        </h1>
+        <div className="m-4">
+          <p className="text-grey">
+            Wish to record videos from your web browser!!! Try this Recorder App
+            which records either audio and video from device default camera and
+            mic or capture screen and you can download the recorded media in mp4
+            file. Give it a try!!!
+          </p>
         </div>
-    )
+        <div className="m-10">
+          <Button
+            className="m-4 text-xl py-3 px-6 bg-blue-300"
+            variant="contained"
+          >
+            <Link className="text-white" to="/app">
+              Go to App
+            </Link>
+          </Button>
+        </div>
+        <div className="m-4 flex flex-row">
+          <p>Check your browser compatibility by</p>
+          <Button className="bg-green-500" href="https://developer.mozilla.org/en-US/docs/Web/API/Media_Capture_and_Streams_API#browser_compatibility">
+            clicking here
+          </Button>
+        </div>
+
+        <div className="w-vw-60 h-vh-100 m-6 bg-white flex flex-col items-center shadow-lg">
+          <h1 className="text-xl m-1"><SettingsIcon/>Settings</h1>
+          <div className="w-32rem h-1 bg-black mt-1 m-4"></div>
+          <div className="flex flex-row ">
+          <h3 className="text-xl mr-32 "><CameraIcon/>Camera Recording</h3>
+            <Switch
+              checked={selectedOption==="video"}
+              value="video"
+              onChange={handleOptionChange}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+          </div>
+          <div className="flex flex-row">
+          <h3 className="text-xl mr-36"><TvIcon/>Screen Capture</h3>
+            <Switch
+              checked={selectedOption==="screen"}
+              value="screen"
+              onChange={handleOptionChange}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
-export default Home
+export default Home;
