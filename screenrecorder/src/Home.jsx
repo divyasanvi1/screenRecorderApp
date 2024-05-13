@@ -9,14 +9,18 @@ import Switch from '@mui/material/Switch';
 import CameraIcon from '@mui/icons-material/Camera';
 import TvIcon from '@mui/icons-material/Tv';
 import SettingsIcon from '@mui/icons-material/Settings';
-function Home({ setSelectedMediaType }) {
+function Home({ setSelectedMediaType,setAudioEnabled }) {
   const [selectedOption, setSelectedOption] = useState("video");
-
+  const [selectAudio, setSelectedAudio]=useState(false);
   const handleOptionChange = (event) => {
     console.log(event);
     setSelectedOption(event.target.value);
     setSelectedMediaType(event.target.value);
   };
+ const handleAudio=()=>{
+      setSelectedAudio(!selectAudio);
+      setAudioEnabled(!selectAudio); 
+ };
   return (
     <div className="flex justify-center items-center bg-image h-screen w-screen">
       <div className="flex flex-col  items-center second-div h-80% w-70%">
@@ -70,6 +74,14 @@ function Home({ setSelectedMediaType }) {
               inputProps={{ "aria-label": "controlled" }}
             />
           </div>
+          <div className="flex flex-row">
+          <h3 className="text-xl mr-36"><TvIcon/>Audio Capture</h3>
+            <Switch
+              checked={selectAudio}
+              onChange={handleAudio}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+          </div> 
         </div>
       </div>
     </div>

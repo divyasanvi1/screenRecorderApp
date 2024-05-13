@@ -3,12 +3,13 @@ import { ReactMediaRecorder } from "react-media-recorder";
 import { styled } from "@mui/system";
 import { useState, useEffect, useRef } from "react";
 import Button from '@mui/material/Button';
+import bgImage from "./bg.jpg";
 const Container = styled("div")({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
- // backgroundImage: `url('./pexels-padrinan-255379(1).jpg')`,
-  backgroundSize: "cover",
+  backgroundImage:`url(${bgImage})`,
+  
   height: "100vh",
 });
 const VideoContainer = styled("div")({
@@ -16,8 +17,8 @@ const VideoContainer = styled("div")({
   paddingTop: "395px", // 16:9 aspect ratio
   position: "relative",
   overflow: "hidden",
-  backgroundColor: "grey",
-  
+  backgroundColor: "white",
+  backgroundColor: "rgba(173, 216, 230, 0.3)"
 });
 const VideoElement = styled("video")({
   position: "absolute",
@@ -26,10 +27,10 @@ const VideoElement = styled("video")({
   top: 0,
   left: 0,
 });
-function AppComponent({ selectedMediaType }) {
+function AppComponent({ selectedMediaType,audioEnabled }) {
   const [mediaStream, setMediaStream] = useState(null);
   const [recording, setRecording] = useState(false);
-
+ 
   const videoRef = useRef(null);
   const downloadLinkRef = useRef(null);
 
@@ -56,10 +57,11 @@ function AppComponent({ selectedMediaType }) {
   };
 
   
-
+  console.log("app :", audioEnabled);
   useEffect(() => {
     // Request access to the user's camera when the component mounts
-    if (selectedMediaType === "video") {
+    if (selectedMediaType === "video" && audioEnabled===true) {
+      console.log("1");
       navigator.mediaDevices
         .getUserMedia({ video: true })
         .then((stream) => {
@@ -69,7 +71,20 @@ function AppComponent({ selectedMediaType }) {
         .catch((error) => {
           console.error("Error accessing camera:", error);
         });
-    } else if (selectedMediaType === "screen") {
+      }
+       else if (selectedMediaType === "video" && audioEnabled===false) {
+        console.log("11");
+      navigator.mediaDevices
+        .getUserMedia({ video: true,audio:false })
+        .then((stream) => {
+          // Store the obtained MediaStream in the component's state
+          setMediaStream(stream);
+        })
+        .catch((error) => {
+          console.error("Error accessing camera:", error);
+        });
+    } else if (selectedMediaType === "screen" && audioEnabled===true) {
+      console.log("111");
       navigator.mediaDevices
         .getDisplayMedia({ video: true, audio: true })
         .then((stream) => {
@@ -80,7 +95,19 @@ function AppComponent({ selectedMediaType }) {
           console.error("Error accessing screen:", error);
         });
     }
-  }, [selectedMediaType]);
+    else if (selectedMediaType === "screen" && audioEnabled===false ) {
+      console.log("1111");
+      navigator.mediaDevices
+        .getDisplayMedia({ video: true, audio: false })
+        .then((stream) => {
+          // Store the obtained MediaStream in the component's state
+          setMediaStream(stream);
+        })
+        .catch((error) => {
+          console.error("Error accessing screen:", error);
+        });
+    } 
+  }, [selectedMediaType, audioEnabled]);
   useEffect(() => {
     if (mediaStream && videoRef.current) {
       videoRef.current.srcObject = mediaStream;
@@ -92,6 +119,7 @@ function AppComponent({ selectedMediaType }) {
       <ReactMediaRecorder
         video={selectedMediaType === "video"}
         screen={selectedMediaType === "screen"}
+        audio={audioEnabled}
         render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
           <Container>
             <div>
