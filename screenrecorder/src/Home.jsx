@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./App.css";
-import SimpleBar from "simplebar-react";
 import Button from "@mui/material/Button";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import "simplebar/dist/simplebar.min.css";
@@ -9,6 +8,7 @@ import Switch from '@mui/material/Switch';
 import CameraIcon from '@mui/icons-material/Camera';
 import TvIcon from '@mui/icons-material/Tv';
 import SettingsIcon from '@mui/icons-material/Settings';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 function Home({ setSelectedMediaType,setAudioEnabled }) {
   const [selectedOption, setSelectedOption] = useState("video");
   const [selectAudio, setSelectedAudio]=useState(false);
@@ -75,13 +75,14 @@ function Home({ setSelectedMediaType,setAudioEnabled }) {
             />
           </div>
           <div className="flex flex-row">
-          <h3 className="text-xl mr-36"><TvIcon/>Audio Capture</h3>
+          <h3 className="text-xl mr-36"><VolumeUpIcon/>Audio Capture</h3>
             <Switch
               checked={selectAudio}
               onChange={handleAudio}
               inputProps={{ "aria-label": "controlled" }}
             />
           </div> 
+          <p>**Only Audio Recording is not Available</p>
         </div>
       </div>
     </div>

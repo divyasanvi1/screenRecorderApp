@@ -16,7 +16,7 @@ function App() {
       <Route6 path="/" element={<Home
       setSelectedMediaType={setSelectedMediaType} setAudioEnabled={setAudioEnabled}/>}/>
       <Route6 path="/app" element={<AppComponent  selectedMediaType={selectedMediaType} audioEnabled={audioEnabled}/>}/>
-      console.log("app :", audioEnabled); 
+     
     </Routes6>
    </Router>
     

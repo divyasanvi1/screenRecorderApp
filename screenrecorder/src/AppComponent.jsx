@@ -4,6 +4,8 @@ import { styled } from "@mui/system";
 import { useState, useEffect, useRef } from "react";
 import Button from '@mui/material/Button';
 import bgImage from "./bg.jpg";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Container = styled("div")({
   display: "flex",
   justifyContent: "center",
@@ -17,7 +19,7 @@ const VideoContainer = styled("div")({
   paddingTop: "395px", // 16:9 aspect ratio
   position: "relative",
   overflow: "hidden",
-  backgroundColor: "white",
+  
   backgroundColor: "rgba(173, 216, 230, 0.3)"
 });
 const VideoElement = styled("video")({
@@ -36,6 +38,7 @@ function AppComponent({ selectedMediaType,audioEnabled }) {
 
   const handleDownload = async (mediaBlobUrl) => {
     if (mediaBlobUrl) {
+      toast("Downloading started!");
       try {
         const response = await fetch(mediaBlobUrl);
         console.log("Download Response:", response);
@@ -57,6 +60,7 @@ function AppComponent({ selectedMediaType,audioEnabled }) {
   };
 
   
+
   console.log("app :", audioEnabled);
   useEffect(() => {
     // Request access to the user's camera when the component mounts
@@ -108,6 +112,24 @@ function AppComponent({ selectedMediaType,audioEnabled }) {
         });
     } 
   }, [selectedMediaType, audioEnabled]);
+  
+
+
+  const handleStart = () => {
+    setRecording(true);
+    toast("Recording started!");
+  };
+
+  const handleStop = () => {
+    // Stop the media stream when recording stops
+    setRecording(false);
+    toast("Recording stopped!");
+    if (mediaStream) {
+      console.log("stoppp");
+      mediaStream.getTracks().forEach(track => track.stop());
+      setMediaStream(null);
+    }
+  };
   useEffect(() => {
     if (mediaStream && videoRef.current) {
       videoRef.current.srcObject = mediaStream;
@@ -120,11 +142,13 @@ function AppComponent({ selectedMediaType,audioEnabled }) {
         video={selectedMediaType === "video"}
         screen={selectedMediaType === "screen"}
         audio={audioEnabled}
+        onStop={handleStop}
+        onStart={handleStart}
         render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
           <Container>
             <div>
               <VideoContainer>
-                {mediaStream && <VideoElement ref={videoRef} autoPlay />}
+                {mediaStream  && <VideoElement ref={videoRef} autoPlay />}
 
                 {mediaBlobUrl && (
                   <VideoElement src={mediaBlobUrl} controls loop />
@@ -137,10 +161,10 @@ function AppComponent({ selectedMediaType,audioEnabled }) {
                   <button
                     onClick={() => {
                       startRecording();
-                      setRecording(true);
                     }}
                     className="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                   >
+                   
                     Start Recording
                   </button>
                 )}
@@ -149,12 +173,7 @@ function AppComponent({ selectedMediaType,audioEnabled }) {
                     onClick={() => {
                       stopRecording();
                       setRecording(false);
-                      console.log(mediaStream)
-                      if (mediaStream) {
-                        mediaStream.getTracks().forEach(track => track.stop());
-                        setMediaStream(null);
-                        console.log(mediaStream)
-                      }
+                      
                     }}
                     className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                   >
@@ -169,6 +188,7 @@ function AppComponent({ selectedMediaType,audioEnabled }) {
                 <a ref={downloadLinkRef} style={{ display: "none" }} />
               </div>
             </div>
+            <ToastContainer />
           </Container>
         )}
       />
